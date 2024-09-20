@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pytorch/pigeon.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:io';
 
 //The 2 imports below are previous imports I tried to use for my project to be able to integrate my pytorch model to flutter
 //But they are either imports which havent been mantained for many years making it incompatible or uses up multiple conversions which lead to errors in between which was hard to debug
 //This is also why I spent multiple days tryng to integrate my model into flutter
-//tflite_flutter produce errors like plugin not implemented, even when it was implemented following the documenatation.
 
 //import 'package:tflite/tflite.dart';
 //import 'package:tflite_flutter/tflite_flutter.dart';
@@ -46,63 +43,23 @@ class HelloFlutter extends StatefulWidget {
 class _HelloFlutterState extends State<HelloFlutter>{
   int selectedindex=0;
   File? _image;
-  //List? output;
- // final ImagePicker _picker = ImagePicker();
+
   File? imageFile;
-  //Interpreter? _interpreter;
+
   late ClassificationModel _model;
   List<String>? labels;
   String? outputLabel;
   List<double?>? predictionListProbabilities;
+  
+  
 
-
-/*
-
-  Future<void> _pickimagefromgallery() async{
-    XFile? selFile= await _picker.pickImage(source: ImageSource.gallery);
-    File selected = File(selFile!.path);
-    setState(() {
-      imageFile = selected;
-    });
-    await classifyImage(selected);
-
-  }
-  */
-
-  /*
-
-  Future<void> _takeImage() async{
-
-    final pickedfile= await _picker.pickImage(source: ImageSource.camera);
-    if (pickedfile != null) {
-      setState(() {
-        _image = File(pickedfile.path); // Store the picked image
-      });
-
-
-  }
-  }
-  // Function to handle navigation item tap
-  void _onItemTapped(int index) {
-    setState(() {
-      selectedindex = index;
-    });
-   // Check if the "Search" icon (index 1) is tapped to pick an image from gallery
-    if (index == 0) {
-      _pickimagefromgallery();
-    }
-    else if(index==1){
-      _takeImage();
-    }
-  }
-  */
 
 
   loadModels() async {
     _model = await FlutterPytorch.loadClassificationModel(
 
       //Integrating this .pt file was such a pain.
-      //Spent hours realizing my torchscript model was made while running on 'CUDA' instead of 'cpu'
+      //Spent hours realizing my torchscript model was made while running on 'CUDA' instead of 'CPU'
       "assets/pre_model_7_script_cpu.pt",  
       270, 
       270,labelPath: "assets/labels.txt"//270*270 as effnet_b2 prefers images at 260*260 thus 270 makes more details be visible
@@ -117,7 +74,7 @@ class _HelloFlutterState extends State<HelloFlutter>{
 
    Future<void> _loadImageFromAssets() async {
     // Load image from assets as bytes
-    ByteData byteData = await rootBundle.load('assets/beef3.jpg');
+    ByteData byteData = await rootBundle.load('assets/pizza-img.jpg');
     Uint8List imageBytes = byteData.buffer.asUint8List();
 
    // Decode and resize the image
@@ -137,43 +94,23 @@ class _HelloFlutterState extends State<HelloFlutter>{
 
     // Set the result to display
     setState(() {
-      _image = File('assets/beef3.jpg'); // Display the image from assets
+      _image = File('assets/pizza-img.jpg'); // Display the image from assets
       outputLabel = labels![maxIndex]; // Set prediction result
     });
 
    }
 
-   /*
-  Future<void> classifyImage (File image) async {
-    Uint8List imageBytes = await image.readAsBytes();
-
-  // Decode the image to ensure it's in the correct format
-  img.Image? decodedImage = img.decodeImage(imageBytes);
-  
-  // Resize the image to match the input dimensions of the model
-  img.Image resizedImage = img.copyResize(decodedImage!, width: 270, height: 270);
-
-  // Convert the resized image back to bytes
-  Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
-
-  // Pass the resized image to the model
-  List<double?>? predictionListProbabilities = await _model.getImagePredictionListProbabilities(resizedImageBytes);
-  setState(() {
-    output = predictionListProbabilities;
-  });
-    
-  }
-  */
+   
 
   @override
   void dispose() {
-    //dis function disposes and clears our memory
+    //This function disposes and clears our memory
     super.dispose();
     
   }
   @override
   void initState() {
-    //initS is the first function that is executed by default when this class is called
+    //initState is the first function that is executed by default when this class is called
     super.initState();
     loadModels().then((_) {
       _loadImageFromAssets();
@@ -209,7 +146,7 @@ class _HelloFlutterState extends State<HelloFlutter>{
          )
           : Column(
         children: [
-          Image.asset('assets/beef3.jpg'), // Show the loaded image
+          Image.asset('assets/pizza-img.jpg'), // Show the loaded image
           //Image.file(_image!),
           const SizedBox(height: 20),
           outputLabel != null
@@ -219,7 +156,8 @@ class _HelloFlutterState extends State<HelloFlutter>{
 
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 30.0,
+                    fontSize: 50.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 )
               : Container(),
@@ -227,7 +165,9 @@ class _HelloFlutterState extends State<HelloFlutter>{
       ),
         ),
       ),
-      
+
+//For the future when I want to implement a bottom navigation bar
+
 /*
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedindex,
