@@ -84,10 +84,11 @@ flutter:
     #- assets/pre_model_7.pt
     #- assets/pre_model_7_script.pt
     - assets/pre_model_7_script_cpu.pt
-    - assets/beef.jpg
+    #- assets/beef.jpg
     - assets/sushi.jpg
-    - assets/beef2.jpg
+    #- assets/beef2.jpg
     - assets/beef3.jpg
+    - assets/beef4.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
