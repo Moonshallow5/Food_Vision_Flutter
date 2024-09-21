@@ -60,9 +60,9 @@ class _HelloFlutterState extends State<HelloFlutter>{
 
       //Integrating this .pt file was such a pain.
       //Spent hours realizing my torchscript model was made while running on 'CUDA' instead of 'CPU'
-      "assets/pre_model_7_script_cpu.pt",  
-      270, 
-      270,labelPath: "assets/labels.txt"//270*270 as effnet_b2 prefers images at 260*260 thus 270 makes more details be visible
+      "assets/pre_model_10_script_cpu_transforms_unfreeze.pt",  
+      500, 
+      500,labelPath: "assets/labels.txt"//270*270 as effnet_b2 prefers images at 260*260 thus 270 makes more details be visible
     );
     labels = await _loadLabelsFromAssets('assets/labels.txt');
    }
@@ -79,7 +79,7 @@ class _HelloFlutterState extends State<HelloFlutter>{
 
    // Decode and resize the image
     img.Image? decodedImage = img.decodeImage(imageBytes);
-    img.Image resizedImage = img.copyResize(decodedImage!, width: 270, height: 270);
+    img.Image resizedImage = img.copyResize(decodedImage!, width: 500, height: 500);
 
     // Convert the resized image back to bytes
     Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
